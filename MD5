@@ -1,0 +1,12 @@
+2dc2b896cea6e7f94eca2f6b54132cab *DESCRIPTION
+d37bf4f1926bab964d86569f1e7d9802 *NAMESPACE
+bdf9be482d1df4750a2a06f224252f0c *R/clustered-robust.R
+df0b43ba6ab355d57a9068be094f8327 *R/mult-imp.R
+1b8419506cb6a6fe4089bdffec6268e3 *R/zzz.R
+9ca53d26bb1d2501d3bab613ab6816c6 *build/partial.rdb
+50062e122c77a51422078408cb086455 *man/bucky-package.Rd
+4bd74624d8b53daa19539a1ea96f0741 *man/mi.eval.Rd
+2cd096a94bcc37622cc3748a38f94768 *man/robust.summary.Rd
+66493d6ca30fa1234e0cd7befa1f43cb *man/robustify.Rd
+c71696b9fd9d0e3dbeacd088bd793c0c *man/summary.mi.estimates.Rd
+b3630c7a2a57d4446f76559ebd23b709 *man/vcovCR.Rd
