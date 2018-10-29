@@ -1,10 +1,10 @@
-ee4c372a904bd964cf593ba990bb0486 *DESCRIPTION
-b5af95217bea615b233a94c0bd8b1010 *NAMESPACE
-acc4da1d78659c9da8a251caba32c605 *NEWS
-288c50004fd452271e17cc87ff82e38a *R/clustered-robust.R
-c9fdae9576c8e84d1be7d648e2562750 *R/mult-imp.R
+4b166c1bc2de1e96df3ec19e3a4b7146 *DESCRIPTION
+e35393a5a58087c5fd302e230b2ecc0b *NAMESPACE
+e011596df96999c81ad4ebc264dc85ae *NEWS
+94d9399d5ee2f2b4cc29a9b1540f956e *R/clustered-robust.R
+caab0e412703b3dfd2d45f3ceda88100 *R/mult-imp.R
 1b8419506cb6a6fe4089bdffec6268e3 *R/zzz.R
-0f0f359f34ade632f1fb0a89639f9702 *build/partial.rdb
+c1c5ee8ad3f4c30d6edcaa7c0bdf5c6a *build/partial.rdb
 5757820a153df56ca4418d9365d84ee0 *man/bucky-package.Rd
 2c38431eccb8cc0fb8b626541d833a67 *man/mi.eval.Rd
 2cd096a94bcc37622cc3748a38f94768 *man/robust.summary.Rd

@@ -131,9 +131,27 @@ print.summary.robustified <- function(x, digits = max(3L, getOption("digits") - 
 vcov.robustified <- function(object, ...) object$cov.robust
 vcov.summary.robustified <- function(object, ...) object$cov.scaled
 
+vcovHC.polr <- function (x, type = c("HC1", "HC0", "HC"), omega = NULL, sandwich = TRUE, ...)
+{
+    type <- match.arg(type)
+    if (type == "HC") 
+        type <- "HC0"
+    if (is.null(omega)) {
+        switch(type,
+               HC0 = omega <- function(residuals, diaghat, df) 1/length(residuals),
+               HC1 = omega <- function(residuals, diaghat, df) 1/df)
+    }
+    estf <- estfun(x)
+    out <- crossprod(estf, omega(rep(1,nrow(estf)), NULL, df.residual(x)) * estf)
+    if (sandwich) 
+        out <- sandwich(x, meat. = out, ...)
+    return(out)
+}
+
 predict.robustified <- function(object, newdata = NULL, se.fit = FALSE,
                                 interval = c("none", "confidence", "prediction"),
                                 level = 0.95,
+				na.action = na.pass,
                                 ...) {
     interval <- match.arg(interval)
     if ((interval == "none") && !se.fit) {
@@ -174,15 +192,19 @@ predict.robustified <- function(object, newdata = NULL, se.fit = FALSE,
             if (!is.null(offset)) 
                 fit <- fit + as.vector(offset)
             stderr <- sqrt(apply((X %*% object$cov.robust) * X, 1, sum))
-            switch(interval, none = , confidence = {
+            switch(interval, confidence = {
                 fit <- outer(stderr, qnorm(0.5 + level * c(fit=0, lwr=-0.5, upr=0.5))) + fit
             }, prediction = {
                 stop("prediction confidence intervals not available for robustified objects")
             })
             switch(type, response = {
-                stderr <- stderr * abs(family(object)$mu.eta(fit))
+                stderr <- stderr * abs(family(object)$mu.eta(as.matrix(fit)[,1]))
                 fit <- family(object)$linkinv(fit)
             }, link = , terms = )
+            if (is.matrix(fit) && is.null(rownames(fit)) && !is.null(names(stderr)))
+                rownames(fit) <- names(stderr)
+            else if ((!is.matrix(fit)) && is.null(names(fit)) && !is.null(names(stderr)))
+                names(fit) <- names(stderr)
             if (se.fit)
                 return(list(fit = fit, se.fit = stderr))
             else
