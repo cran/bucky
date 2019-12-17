@@ -5,7 +5,7 @@ midsimp2df <- function(object, i) {
     return(df)
 }
 
-mi.eval <- function(EXPR, robust, cluster, coef., vcov., df.=NULL, parallel=NULL, lazy=NULL, ...) {
+mi.eval <- function(EXPR, robust, cluster, coef., vcov., df.=NULL, parallel=FALSE, lazy=NULL, ...) {
     mf.raw <- match.call()
     if (!("EXPR" %in% names(mf.raw)))
         stop("Must specify R command to apply across multiply imputed datasets.")
@@ -24,7 +24,7 @@ mi.eval <- function(EXPR, robust, cluster, coef., vcov., df.=NULL, parallel=NULL
     if (!("vcov." %in% names(mf.raw))) {
         if ("cluster" %in% names(vcov.expr)) {
             vcov.expr[[1L]] <- quote(bucky::vcovCR)
-                mthd.plus <- as.character(enquote(mf$cluster)[-1])
+                mthd.plus <- as.character(enquote(mf.raw$cluster)[-1])
             if (nchar(mthd.plus) >= 40)
                 mthd.plus <- c("robust standard errors clustered on:",mthd.plus)
             else
@@ -92,7 +92,7 @@ mi.eval <- function(EXPR, robust, cluster, coef., vcov., df.=NULL, parallel=NULL
             warning("Can't load \"parallel\" parallel. Using serial computation.")
     }
     if (parallel) {
-        imp.list <- parallel::mclapply(1:num.imp, imp.info$sub, mf=mf, m=m, ...)
+        imp.list <- parallel::mclapply(1:num.imp, imp.info$sub, mf=mf, m=m, ..., mc.silent=TRUE, mc.allow.recursive=FALSE)
         if (any(sapply(imp.list, inherits, what="try-error"))) {
             stop(imp.list[which(sapply(imp.list, inherits, what="try-error"))[1]],
                  call.=FALSE)
@@ -123,7 +123,7 @@ mi.eval <- function(EXPR, robust, cluster, coef., vcov., df.=NULL, parallel=NULL
     ind.v <- 1:k
     if ((length(names(coeflist[[1]])) > 0) & all(names(coeflist[[1]]) %in% rownames(vcovlist[[1]])))
         ind.v <- match(names(coeflist[[1]]), rownames(vcovlist[[1]]))
-    else if ((length(rownames(vcovlist[[1]])) > 0) & all(rownames(vcovlist[[1]])) %in% names(coeflist[[1]]))
+    else if ((length(rownames(vcovlist[[1]])) > 0) & all(rownames(vcovlist[[1]]) %in% names(coeflist[[1]])))
         ind.c <- match(rownames(vcovlist[[1]]),names(coeflist[[1]]))
     coeflist <- vapply(coeflist, function(x, ind) return(as.vector(x)[ind]), rep(0,k), ind=ind.c)
     vcovlist <- vapply(vcovlist, function(x, ind) return(as.matrix(x)[ind,ind,drop=FALSE]), diag(k), ind=ind.v)
